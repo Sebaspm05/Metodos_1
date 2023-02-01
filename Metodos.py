@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 """
 Created on Wed Feb  1 09:45:20 2023
 
@@ -9,7 +8,7 @@ Created on Wed Feb  1 09:45:20 2023
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as anim
-from tqdm import tqdm
+
 
 "Clase: Crear objeto(Instancía) -Constructor, -Atributos, -Metodos"
 
@@ -47,16 +46,10 @@ def Runsimulation(t):
     
     r0=np.array([0.1,0.1])
     v0=np.array([1,5])
-    a0=np.array([0,0])
+    a0=np.array([0,-9.8])
     
     p1= Particle(r0,v0,a0,t)
-    
-    for it in tqdm(range(len(t))):
-        p1.Evolution(it)
-    
-    return p1
-    
-        
+            
 "__init__ : "
 
 "self.atributo de un objeto"
@@ -73,7 +66,6 @@ tmax=1
 t=np.arrage(0,tmax,dt)
 Particles = Runsimulation(t)
 
-#Animar
 fig= plt.figure(figsize=(5,5))
 ax= fig.add_subplot(111)
 
@@ -87,11 +79,16 @@ def Update(i):
     
     x= Particles.GetPosition()[i,0]
     y= Particles.GetPosition()[i,1]
+     
+    vx= Particles.GetVelocity()[i,0]
+    vy= Particles.GetVelocity()[i,1]
     
     circle = plt.Circle((x,y),Particles.radius, fill=True)
     ax.add_patch(circle)
     
-Animation = anim.FuncAnimation(fig,Update,frames=len(t),init_func=init) 
+    ax.arrow( x,y,vx,vy,head_width=0.2,color='r' )
+    
+Animation = anim.FuncAnimation(fig,Update,frames=len(t),init_func=init)
 
 
     
