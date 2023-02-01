@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 """
 Created on Wed Feb  1 09:45:20 2023
 
@@ -8,7 +9,7 @@ Created on Wed Feb  1 09:45:20 2023
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as anim
-"from tqdm import tqdm"
+from tqdm import tqdm
 
 "Clase: Crear objeto(Instancía) -Constructor, -Atributos, -Metodos"
 
@@ -27,7 +28,9 @@ class Particle:
         self.radius = radius
         self.masa = m
         
-    
+    def Evolution (self,i):
+        self.SetVelocity(i)
+        
     def Setposition(self,i):
         self.R[i]=self.r
         
@@ -42,9 +45,16 @@ class Particle:
     
 def Runsimulation(t):
     
-    r0=np.zeros([0.1,0.1])
-    v0=np.zeros([1,5])
-    a0=np.zeros([0,0])
+    r0=np.array([0.1,0.1])
+    v0=np.array([1,5])
+    a0=np.array([0,0])
+    
+    p1= Particle(r0,v0,a0,t)
+    
+    for it in tqdm(range(len(t))):
+        p1.Evolution(it)
+    
+    return p1
     
         
 "__init__ : "
@@ -54,15 +64,35 @@ def Runsimulation(t):
 t=np.linspace(0, 1,10)
 p1= Particle([0,0], [1,0], [0,0], t)
 
-p1.GetVelocity(3) 
+velocity= p1.SetVelocity(3) 
 "El numero en dentro del parentisis es el salto entre la matriz"
 
 
+dt=0,1
+tmax=1
+t=np.arrage(0,tmax,dt)
+Particles = Runsimulation(t)
+
+#Animar
+fig= plt.figure(figsize=(5,5))
+ax= fig.add_subplot(111)
+
+def init():
+    ax.set_xlimit(-10,10)
+    ax.set_ylimit(-10,10)
+    
+def Update(i):
+    ax.clear()
+    init()
+    
+    x= Particles.GetPosition()[i,0]
+    y= Particles.GetPosition()[i,1]
+    
+    circle = plt.Circle((x,y),Particles.radius, fill=True)
+    ax.add_patch(circle)
+    
+Animation = anim.FuncAnimation(fig,Update,frames=len(t),init_func=init) 
 
 
-print(p1.r)
-print(p1.v)
-print(p1.V)
-print(p1.radius)
-print(p1.R)
+    
 
